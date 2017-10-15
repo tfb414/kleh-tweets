@@ -3,12 +3,14 @@ const rp = require('request-promise');
 
 function callReddit(subreddit, tweet) {
   getBearerToken().then((token) => {
+
     submitLink(token, subreddit, tweet);
   });
 }
 
 function submitLink(token, subreddit, tweet) {
-  var options = { 
+  console.log(token + ' submitLike')
+  var options = {
     method: 'POST',
     url: 'https://oauth.reddit.com/api/submit',
     auth: {
@@ -19,16 +21,17 @@ function submitLink(token, subreddit, tweet) {
     },
     form: {
       sr: subreddit,
-      kind: 'text',
-      //url: "https://google.com",
-      text: "my text",
-      title: 'derp_testing' // Should be tweet['title'] or something
+      kind: 'link',
+      url: tweet['link'],
+      title: tweet['title'] + ' (commit by ' + tweet['committer'] + ')'
+      // text: "my text",
+      // Should be tweet['title'] or something
     }
   }
 
   rp(options).then((response) => {
     console.log(response);
-  });
+  }).catch((err) => { console.log(err) });
 }
 
 function getBearerToken() {

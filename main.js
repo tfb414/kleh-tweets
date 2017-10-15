@@ -5,18 +5,24 @@ const rp = require('request-promise');
 const reddit = require('./reddit.js');
 
 function main() {
-  let latestTweet;
-
   // Change back to setInterval to release the kraken
-  reddit.callReddit('bottesting', 'tweet')
-  //setTimeout(() => {
-  //  twitter.checkTweets().then((tweet) => {
-  //  reddit.callReddit('bottesting', tweet)
-  //  })
-  //}, 1000);
+  // reddit.callReddit('bottesting', tweet)
+  setInterval(() => {
+    twitter.checkTweets('bradybattlebot').then((tweet) => {
+
+      checkAndPost(tweet);
+
+    }).catch((err) => { console.log(err) })
+  }, 5000);
+
+  function checkAndPost(tweet, lastTweet) {
+    if (tweet['title'].split(" ")[0] !== "merge") {
+      reddit.callReddit('bottesting', tweet);
+    }
 
 
-  
+
+  }
 }
 
 main();
