@@ -21,7 +21,7 @@ function checkTweets(twitterHandle) {
         .then((info) => {
             // console.log(info[0])
             return {
-                link: generateLink(info[0]['id_str'], 'bradybattlebot'),
+                link: generateLink(info[0]['id_str'], 'rustupdates'),
                 title: getTitle(info[0]['text']),
                 committer: getCommitter(info[0]['text'])
             }

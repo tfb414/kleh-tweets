@@ -8,7 +8,7 @@ function main() {
   // Change back to setInterval to release the kraken
   // reddit.callReddit('bottesting', tweet)
   setInterval(() => {
-    twitter.checkTweets('bradybattlebot').then((tweet) => {
+    twitter.checkTweets('rustupdates').then((tweet) => {
 
       checkAndPost(tweet);
 
@@ -17,7 +17,7 @@ function main() {
 
   function checkAndPost(tweet, lastTweet) {
     if (tweet['title'].split(" ")[0] !== "merge") {
-      reddit.callReddit('bottesting', tweet);
+      reddit.callReddit('playrust', tweet);
     }
 
 
