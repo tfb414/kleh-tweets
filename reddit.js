@@ -1,34 +1,70 @@
-const postData = querystring.stringify({
-    'msg': 'Hello World!'
+const env = require('dotenv').config();
+const rp = require('request-promise');
+
+function callReddit(subreddit, tweet) {
+  getBearerToken().then((token) => {
+    submitLink(token, subreddit, tweet);
   });
-  
-  const options = {
-    hostname: 'www.google.com',
-    port: 80,
-    path: '/upload',
+}
+
+function submitLink(token, subreddit, tweet) {
+  var options = { 
     method: 'POST',
+    url: 'https://oauth.reddit.com/api/submit',
+    auth: {
+      bearer: token
+    },
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData)
+      'User-Agent': 'tweet_bot:v1.0'
+    },
+    form: {
+      sr: subreddit,
+      kind: 'text',
+      //url: "https://google.com",
+      text: "my text",
+      title: 'derp_testing' // Should be tweet['title'] or something
     }
+  }
+
+  rp(options).then((response) => {
+    console.log(response);
+  });
+}
+
+function getBearerToken() {
+  // Set up some auth
+  var auth = {
+    'user': process.env.REDDIT_CLIENT_ID,
+    'password': process.env.REDDIT_CLIENT_SECRET,
+    'sendImmediately': false
+  }
+
+  // Set up the required post data
+  var post_data = {
+    grant_type: 'password',
+    username: process.env.REDDIT_USER_NAME,
+    password: process.env.REDDIT_USER_PASS,
+  }
+
+  // Set up the POST
+  var options = {
+    method: 'POST',
+    url: 'https://www.reddit.com/api/v1/access_token',
+    auth: auth,
+    headers: {
+      'User-Agent': 'tweet_bot:v1.0'
+    },
+    form: post_data
   };
-  
-  const req = http.request(options, (res) => {
-    console.log(`STATUS: ${res.statusCode}`);
-    console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => {
-      console.log(`BODY: ${chunk}`);
-    });
-    res.on('end', () => {
-      console.log('No more data in response.');
-    });
-  });
-  
-  req.on('error', (e) => {
-    console.error(`problem with request: ${e.message}`);
-  });
-  
-  // write data to request body
-  req.write(postData);
-  req.end();
+
+  // Make the POST for the bearer token
+  return rp(options)
+    .then((body) => {
+      return JSON.parse(body)['access_token'];
+    })
+    .catch((err) => console.log(err));
+}
+
+module.exports = {
+  callReddit: callReddit
+};
