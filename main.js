@@ -1,5 +1,8 @@
+const twitter = require('./twitter.js')
+
 function main() {
-  console.log("Main"); 
+  twitter.init();
+  console.log('main')
 }
 
 main();
