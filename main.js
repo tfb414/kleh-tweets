@@ -17,26 +17,46 @@ function main() {
     'password': process.env.REDDIT_CLIENT_SECRET,
     'sendImmediately': false
   }
-  var options = {
-    url: 'https://www.reddit.com/api/v1/access_token',
-    headers: {
-      'User-Agent': 'tweet_bot:v1.0'
-    },
-    auth: auth
-  };
-
   var post_data = {
     grant_type: 'password',
     username: process.env.REDDIT_USER_NAME,
     password: process.env.REDDIT_USER_PASS,
   }
+  var options = {
+    url: 'https://www.reddit.com/api/v1/access_token',
+    auth: auth,
+    headers: {
+      'User-Agent': 'tweet_bot:v1.0'
+    },
+    form: post_data
+  };
 
-  callback = (error, response, body) => {
+
+  request.post(options, function (error, response, body) {
     if(error) {console.log(error);}
+
+    var info = JSON.parse(body)['access_token'];
+    console.log(info);
+
+    var auth = {
+      'bearer': info
+    }
+
+    var options = {
+      url: 'https://oauth.reddit.com/api/v1/me',
+      auth: auth,
+      headers: {
+        'User-Agent': 'tweet_bot:v1.0'
+      }
+    };
+
+    request.get(options, function (error, response, body) {
+      if(error) {console.log(error);}
+
       var info = JSON.parse(body);
       console.log(info);
-  };
-  request.post(options, callback);
+    });
+  });
 
   console.log("Ending");
 }
