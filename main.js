@@ -13,7 +13,7 @@ function main() {
       checkAndPost(tweet);
 
     }).catch((err) => { console.log(err) })
-  }, 5000);
+  }, 5001);
 
   function checkAndPost(tweet, lastTweet) {
     if (tweet['title'].split(" ")[0] !== "merge") {
