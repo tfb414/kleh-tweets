@@ -3,7 +3,6 @@ const rp = require('request-promise');
 
 function callReddit(subreddit, tweet) {
   getBearerToken().then((token) => {
-
     submitLink(token, subreddit, tweet);
   });
 }
